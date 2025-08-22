@@ -1,0 +1,13 @@
+### /a2a-validation-agent/requirements.txt
+
+google-adk
+fastapi
+uvicorn
+httpx
+pydantic
+jinja2
+
+# Testing dependencies
+pytest
+pytest-asyncio
+pytest-httpx

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ui.title }}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-bg: #1a202c; --secondary-bg: #2d3748; --accent-blue: #38b2ac;
+            --text-primary: #e2e8f0; --text-secondary: #a0aec0; --border-color: #4a5568;
+            --pass-color: #48bb78; --fail-color: #f56565; --skipped-color: #a0aec0;
+        }
+        body {
+            font-family: 'Poppins', sans-serif; margin: 0; display: flex; justify-content: center;
+            align-items: center; min-height: 100vh; color: var(--text-primary);
+            background-color: var(--primary-bg);
+            background-image: url('https://images.alphacoders.com/301/thumb-1920-301273.jpg');
+            background-size: cover; background-position: center; background-attachment: fixed;
+        }
+        body::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 20, 30, 0.85); backdrop-filter: blur(5px); z-index: 1;
+        }
+        .container {
+            position: relative; z-index: 2; width: 100%; max-width: 800px;
+            margin: 40px 20px; padding: 40px; background: rgba(26, 32, 44, 0.8);
+            border-radius: 16px; box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(74, 85, 104, 0.5); animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .header { text-align: center; margin-bottom: 30px; }
+        h1 {
+            font-size: 2.5em; font-weight: 700; margin: 0;
+            background: linear-gradient(45deg, var(--accent-blue), #81e6d9);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .header p { margin-top: 5px; color: var(--text-secondary); font-size: 1.1em; }
+        form { display: flex; flex-direction: column; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 25px; }
+        .form-field { display: flex; flex-direction: column; }
+        .form-field-header { display: flex; align-items: center; margin-bottom: 8px; }
+        label { font-weight: 600; color: var(--text-secondary); }
+        .tooltip {
+            position: relative; display: inline-block; cursor: pointer; margin-left: 8px;
+            border: 1px solid var(--text-secondary); border-radius: 50%; width: 16px; height: 16px;
+            font-size: 12px; line-height: 16px; text-align: center; color: var(--text-secondary);
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden; width: 240px; background-color: var(--primary-bg); color: var(--text-primary);
+            text-align: center; border-radius: 6px; padding: 8px; position: absolute;
+            z-index: 10; bottom: 150%; left: 50%; margin-left: -120px; opacity: 0;
+            transition: opacity 0.3s; border: 1px solid var(--border-color); box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .tooltip:hover .tooltiptext { visibility: visible; opacity: 1; }
+        input[type="text"] {
+            padding: 14px 18px; background-color: var(--secondary-bg); border: 1px solid var(--border-color);
+            border-radius: 8px; color: var(--text-primary); font-size: 16px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus {
+            outline: none; border-color: var(--accent-blue); box-shadow: 0 0 0 4px rgba(56, 178, 172, 0.3);
+        }
+        button {
+            width: 100%; padding: 14px 20px; background: var(--accent-blue); color: #fff;
+            font-size: 16px; font-weight: 600; border: none; border-radius: 8px;
+            cursor: pointer; transition: background-color 0.3s, transform 0.1s;
+        }
+        button:hover { background-color: #2c7a7b; }
+        button:disabled { background-color: var(--border-color); cursor: not-allowed; }
+        .loader {
+            display: none; border: 4px solid #f3f3f3; border-top: 4px solid var(--accent-blue);
+            border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; margin-left: 20px;
+        }
+        #validation-form-group { display: flex; align-items: center; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .live-log-container {
+            margin-top: 40px; background-color: rgba(26, 26, 26, 0.7); border: 1px solid var(--border-color);
+            border-radius: 8px; padding: 20px;
+        }
+        .live-log-container h3 { margin: 0 0 15px 0; font-weight: 600; color: var(--text-primary); }
+        #log-panel {
+            background-color: #1a1a1a; color: #d4d4d4; font-family: 'Menlo', 'Consolas', monospace;
+            font-size: 13px; height: 300px; overflow-y: scroll; white-space: pre-wrap;
+            word-wrap: break-word; margin: 0; border-radius: 4px; padding: 15px;
+        }
+        .log-entry-header { color: var(--accent-blue); font-weight: bold; }
+        .log-entry-response { color: #9ae6b4; }
+        .log-entry-response.fail { color: #feb2b2; }
+        .results { margin-top: 40px; }
+        .results-header {
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color); padding-bottom: 10px;
+        }
+        .results-header h2 { margin: 0; color: #fff; font-weight: 400; }
+        .download-btn {
+            display: inline-flex; align-items: center; padding: 8px 16px; background-color: var(--secondary-bg);
+            color: var(--text-primary); text-decoration: none; border-radius: 6px; border: 1px solid var(--border-color);
+            font-weight: 600; transition: background-color 0.2s, border-color 0.2s;
+        }
+        .download-btn:hover { background-color: var(--border-color); border-color: var(--text-secondary); }
+        .download-btn svg { margin-right: 8px; width: 16px; height: 16px; }
+        .results h3 {
+            font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px; margin: 30px 0 20px 0;
+        }
+        .result {
+            display: flex; align-items: flex-start; background-color: var(--secondary-bg); padding: 15px 20px;
+            margin-bottom: 12px; border-radius: 8px; border-left: 5px solid; transition: box-shadow 0.2s ease-in-out;
+        }
+        .result:hover { box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .result-icon { margin-right: 15px; margin-top: 3px; flex-shrink: 0; }
+        .result-icon svg { width: 24px; height: 24px; }
+        .result-content { flex-grow: 1; }
+        .result-content strong { font-size: 1.1em; color: var(--text-primary); }
+        .result-content .details { font-size: 0.9em; color: var(--text-secondary); margin-top: 4px; }
+        .result.pass { border-left-color: var(--pass-color); }
+        .result.fail { border-left-color: var(--fail-color); }
+        .result.skipped { border-left-color: var(--skipped-color); }
+        .explanation-dropdown { margin-top: 15px; }
+        .explanation-dropdown summary {
+            cursor: pointer; font-weight: 600; color: var(--text-secondary); outline: none; transition: color 0.2s;
+        }
+        .explanation-dropdown summary:hover { color: var(--accent-blue); }
+        .explanation-dropdown p {
+            margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border-color);
+            color: var(--text-secondary); font-size: 0.9em; line-height: 1.6;
+        }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ ui.title }}</h1>
+            <p>Agent-to-Agent Protocol & Security Validator</p>
+        </div>
+
+        <form id="validation-form" action="/run-validation" method="post">
+            <div class="form-grid">
+                {% for field in ui.input_fields %}
+                <div class="form-field">
+                    <div class="form-field-header">
+                        <label for="{{ field.name }}">{{ field.label }}</label>
+                        {% if field.tooltip %}<div class="tooltip">i<span class="tooltiptext">{{ field.tooltip }}</span></div>{% endif %}
+                    </div>
+                    <input type="{{ field.type }}" id="{{ field.name }}" name="{{ field.name }}" value="{{ field.value }}" placeholder="{% if field.name == 'api_url' %}https://...{% else %}Optional...{% endif %}" {% if field.required %}required{% endif %}>
+                </div>
+                {% endfor %}
+            </div>
+            <div id="validation-form-group">
+                 <button id="run-button" type="submit">{{ ui.button.text }}</button>
+                 <div id="loader" class="loader"></div>
+            </div>
+        </form>
+
+        {% if request_logs_json and request_logs_json != '[]' %}
+        <div class="live-log-container">
+            <h3>Live Request Log</h3>
+            <pre id="log-panel"></pre>
+        </div>
+        {% endif %}
+
+        {% if a2a_results or owasp_results %}
+            <div class="results">
+                <div class="results-header">
+                    <h2>Validation Results</h2>
+                    <a href="/download-report" class="download-btn">
+                        <svg fill="currentColor" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+                        Download Report
+                    </a>
+                </div>
+                {% macro render_result(result) %}
+                    <div class="result {{ result.status | lower }}">
+                        <div class="result-icon">
+                            {% if result.status == 'PASS' %}<svg fill="var(--pass-color)" viewBox="0 0 20 20"><path d="M0 11l2-2 5 5L18 3l2 2L7 18z"/></svg>
+                            {% elif result.status == 'FAIL' %}<svg fill="var(--fail-color)" viewBox="0 0 20 20"><path d="M10 8.586L2.929 1.515 1.515 2.929 8.586 10l-7.071 7.071 1.414 1.414L10 11.414l7.071 7.071 1.414-1.414L11.414 10l7.071-7.071-1.414-1.414L10 8.586z"/></svg>
+                            {% else %}<svg fill="var(--skipped-color)" viewBox="0 0 20 20" style="width:20px; height:20px;"><path d="M10 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm1 11H9v2h2v-2zm0-7H9v5h2V6z" /></svg>
+                            {% endif %}
+                        </div>
+                        <div class="result-content">
+                            <strong>{{ result.name }}</strong>
+                            <div class="details">{{ result.details }}</div>
+                            <details class="explanation-dropdown"><summary>Learn More</summary><p>{{ result.explanation }}</p></details>
+                        </div>
+                    </div>
+                {% endmacro %}
+                {% if a2a_results %}<h3>A2A Protocol Validation</h3>{% for result in a2a_results %}{{ render_result(result) }}{% endfor %}{% endif %}
+                {% if owasp_results %}<h3>OWASP Security Checks</h3>{% for result in owasp_results %}{{ render_result(result) }}{% endfor %}{% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        const validationForm = document.getElementById('validation-form');
+        const runButton = document.getElementById('run-button');
+        const loader = document.getElementById('loader');
+        const apiUrlInput = document.getElementById('api_url');
+
+        validationForm.addEventListener('submit', function(event) {
+            if (apiUrlInput.value.trim() !== '') {
+                loader.style.display = 'block';
+                runButton.disabled = true;
+                runButton.textContent = 'Validating...';
+            }
+        });
+
+        const logPanel = document.getElementById('log-panel');
+        const requestLogs = {{ request_logs_json | safe if request_logs_json else "[]" }};
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                 .replace(/&/g, "&amp;")
+                 .replace(/</g, "&lt;")
+                 .replace(/>/g, "&gt;")
+                 .replace(/"/g, "&quot;")
+                 .replace(/'/g, "&#039;");
+        }
+
+        function animateLogs(logs) {
+            if (!logPanel) return;
+            let i = 0;
+            logPanel.innerHTML = '';
+
+            function printNextLog() {
+                if (i >= logs.length) {
+                    logPanel.innerHTML += '<span class="log-entry-header">[DONE] All tests complete.</span>\n';
+                    return;
+                }
+                const log = logs[i];
+                const req = log.request;
+                const res = log.response;
+                
+                let logEntryHTML = `<span class="log-entry-header">[REQUEST] ${log.test}</span>\n`;
+                if (req.note) {
+                    logEntryHTML += `&gt; ${escapeHtml(req.note)}\n`;
+                } else {
+                    logEntryHTML += `&gt; ${escapeHtml(req.method)} ${escapeHtml(req.url)}\n`;
+                    for (const [key, value] of Object.entries(req.headers)) {
+                        logEntryHTML += `&gt; ${escapeHtml(key)}: ${escapeHtml(value || '')}\n`;
+                    }
+                    if (req.json) {
+                        logEntryHTML += `\n${escapeHtml(JSON.stringify(req.json, null, 2))}\n`;
+                    } else if (req.content) {
+                        logEntryHTML += `\n${escapeHtml(req.content)}\n`;
+                    }
+                }
+
+                if (res) {
+                    const isFailStatus = res.status_code >= 400;
+                    const responseClass = isFailStatus ? 'log-entry-response fail' : 'log-entry-response';
+                    logEntryHTML += `\n<span class="${responseClass}">[RESPONSE] Status: ${res.status_code || 'N/A'}</span>\n`;
+                    if (res.error) {
+                        logEntryHTML += `${escapeHtml(res.error)}\n`;
+                    } else if (res.text) {
+                        try {
+                            // Try to pretty-print if it's JSON
+                            const jsonResponse = JSON.parse(res.text);
+                            logEntryHTML += `${escapeHtml(JSON.stringify(jsonResponse, null, 2))}\n`;
+                        } catch (e) {
+                            // Otherwise, just show the raw text
+                            logEntryHTML += `${escapeHtml(res.text)}\n`;
+                        }
+                    }
+                }
+                
+                logEntryHTML += '---\n\n';
+                logPanel.innerHTML += logEntryHTML;
+                logPanel.scrollTop = logPanel.scrollHeight;
+                i++;
+                setTimeout(printNextLog, 600); // Slightly increased delay for readability
+            }
+            printNextLog();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (requestLogs && requestLogs.length > 0) {
+                animateLogs(requestLogs);
+            }
+        });
+    </script>
+</body>
+</html>

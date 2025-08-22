@@ -1,0 +1,176 @@
+# ############################################################################
+# ## Comprehensive and Secure .gitignore ##
+# ## https://github.com/github/gitignore for language-specific templates ##
+# ############################################################################
+
+# ############################################################################
+# ## Sensitive & Secret Files ##
+# ## NEVER commit sensitive information. ##
+# ## Use environment variables or a secrets management tool. ##
+# ############################################################################
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Credentials and secrets
+*.key
+*.pem
+*.token
+*.secret
+credentials.*
+secrets.*
+config.json
+
+# Private SSH keys
+id_rsa
+id_dsa
+*.p12
+*.pfx
+*.asc
+
+# ############################################################################
+# ## Common Frameworks & Build Tools ##
+# ############################################################################
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-error.log*
+yarn-debug.log*
+package-lock.json # Consider keeping if you want deterministic builds
+pnpm-lock.yaml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+
+# Virtual Environments
+.venv
+venv/
+ENV
+env
+.env
+
+# Java
+*.class
+*.log
+*.jar
+*.war
+*.ear
+target/
+.classpath
+.project
+.settings/
+
+# ############################################################################
+# ## Operating System & Editor/IDE Specific Files ##
+# ############################################################################
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+# Thumbnails
+._*
+# Trash
+.Trashes
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.swp
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# JetBrains IDEs (IntelliJ, PyCharm, etc.)
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ############################################################################
+# ## General Development Artifacts & Logs ##
+# ############################################################################
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Build outputs
+build/
+dist/
+out/
+bin/
+
+# Dependency directories
+vendor/
+bower_components/
+
+# Test reports
+coverage/
+.nyc_output/
+junit.xml
+
+# Databases
+*.sqlite
+*.db
+*.sql
+
+# ############################################################################
+# ## Miscellaneous ##
+# ############################################################################
+
+# Archives
+*.zip
+*.tar
+*.gz
+*.rar
+
+# Executables
+*.exe
+*.dll
+*.so
+*.out
+
+# ############################################################################
+# ## Exception Rules ##
+# ## Use '!' to un-ignore specific files that are covered by a broader rule. ##
+# ## Example: Allow a specific log file if needed for some reason. ##
+# ############################################################################
+# !important.log
