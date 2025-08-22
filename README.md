@@ -1,16 +1,28 @@
-## A2A Validation Agent
+# A2A Validation Agent
 
-An agentic system built with the Google Agent Development Kit (ADK) to validate Agent-to-Agent (A2A) communication implementations against protocol standards and common security vulnerabilities.
+A comprehensive agentic system designed to validate Agent-to-Agent (A2A) communication implementations. This tool checks for compliance with protocol standards and tests for common security vulnerabilities, ensuring your agent's API is robust, secure, and reliable.
 
-### Key Features
+The system is built with the Google Agent Development Kit (ADK) and provides a simple web interface for initiating tests and viewing clear, structured results.
 
-*   **A2A Protocol Validation:** In-depth checks for authentication, message formatting, and HTTP method compliance.
-*   **OWASP Security Checks:** Basic validation against common LLM vulnerabilities like prompt injection and insecure output handling.
+## Key Features
+
+*   **A2A Protocol Validation:** Performs in-depth checks for authentication standards, correct message formatting, and proper HTTP method compliance.
+*   **OWASP LLM Security Checks:** Includes basic validation against common LLM vulnerabilities, specifically Prompt Injection (LLM01) and Insecure Output Handling (LLM04).
+*   **Simple Web Interface:** An intuitive UI allows you to easily enter an agent's endpoint, provide credentials, and run the validation suite.
+*   **Live Request Logging:** View the HTTP requests and responses in real-time as the tests are being executed.
+*   **Downloadable Reports:** Generate and download a detailed Markdown report of the validation results for offline analysis and record-keeping.
 *   **ADK-Powered:** Built on the robust and scalable Google Agent Development Kit.
-*   **Simple UI:** Easy-to-use web interface for initiating validation tests.
-*   **Clear Results:** Structured and clear output of validation results.
 
-### Installation Guide
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+*   Python (3.9 or newer recommended)
+*   `git` for cloning the repository
+*   `venv` module for creating virtual environments (usually included with Python)
+
+## Installation
+
+Follow these steps to set up the project on your local machine:
 
 1.  **Clone the repository:**
     ```bash
@@ -18,53 +30,55 @@ An agentic system built with the Google Agent Development Kit (ADK) to validate 
     cd a2a-validation-agent
     ```
 
-2.  **Create a virtual environment and install dependencies:**
+2.  **Create and activate a virtual environment:**
+    This isolates the project dependencies from your global Python installation.
+
+    *   On macOS/Linux:
+        ```bash
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
+    *   On Windows:
+        ```bash
+        python -m venv venv
+        venv\Scripts\activate
+        ```
+
+3.  **Install the required dependencies:**
     ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
     pip install -r requirements.txt
     ```
 
-### Usage Instructions
+## Usage
 
 1.  **Run the agent:**
+    Execute the following command from the root directory of the project (`/a2a-validation-agent`):
     ```bash
-    python src/agent.py
+    python -m src
     ```
+    Alternatively, for development with auto-reloading, you can use `uvicorn`:
+    ```bash
+    uvicorn src.agent:app --reload
+    ```
+    The server will start, typically on `http://127.0.0.1:8000`.
 
-2.  **Access the UI:**
+2.  **Access the User Interface:**
     Open your web browser and navigate to `http://127.0.0.1:8000`.
 
-3.  **Run a validation test:**
-    *   Enter the URL of the A2A-compliant API endpoint you want to test.
-    *   (Optional) Provide a valid Bearer Token for authenticated tests.
-    *   Click "Run Validation".
-    *   The validation results will be displayed in the output area.
+3.  **Run a Validation Test:**
+    *   In the "A2A API Endpoint URL" field, enter the full URL of the agent endpoint you wish to test.
+    *   If the endpoint requires authentication, provide a valid Bearer Token in the optional field.
+    *   Click the "Run Validation" button.
 
-### Technical Stack
+4.  **View Results:**
+    *   The validation results will appear on the page, categorized into "A2A Protocol Validation" and "OWASP Security Checks".
+    *   A live log of all requests made during the validation will also be displayed.
+    *   Click the "Download Report" button to save a copy of the results in Markdown format.
 
-*   **Framework:** Google Agent Development Kit (ADK)
+## Technical Stack
+
+*   **Agent Framework:** Google Agent Development Kit (ADK)
 *   **Web Framework:** FastAPI
 *   **HTTP Client:** httpx
 *   **Schema Validation:** Pydantic
-
----
-
-### Directory Structure
-
-```/a2a-validation-agent
-|
-|-- src/
-|   |-- agent.py          # Main agent logic and ADK integration
-|   |-- ui.py             # ADK UI component definitions
-|   |-- validation/
-|   |   |-- __init__.py
-|   |   |-- a2a_checks.py   # Functions for A2A protocol validation suites
-|   |   |-- owasp_checks.py # Functions for OWASP security checks
-|   |   |-- schemas.py      # Pydantic models or dicts for A2A schemas
-|
-|-- tests/
-|   |-- test_validation.py  # Unit tests for the validation logic
-|
-|-- requirements.txt      # Project dependencies
-|-- README.md             # Project documentation
+*   **Testing:** Pytest, pytest-httpx
