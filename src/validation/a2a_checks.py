@@ -117,10 +117,14 @@ async def run_a2a_checks(api_url: str, bearer_token: str | None) -> tuple[list[d
     if response is not None:
         if response.status_code in [200, 202]:
             try:
-                if "status" in response.json():
-                     results.append({"name": test_name, "status": "PASS", "details": "Response conforms to schema.", "explanation": "A compliant agent must produce valid, well-structured responses."})
+                # --- START OF CORRECTION ---
+                # Improved check for a more specific failure message
+                response_data = response.json()
+                if "status" in response_data:
+                     results.append({"name": test_name, "status": "PASS", "details": "Response conforms to the expected schema.", "explanation": "A compliant agent must produce valid, well-structured responses."})
                 else:
-                     results.append({"name": test_name, "status": "FAIL", "details": "Response missing required fields.", "explanation": "Agent response was missing required fields from the schema."})
+                     results.append({"name": test_name, "status": "FAIL", "details": "Response missing required field: 'status'.", "explanation": "Agent response was missing required fields from the schema."})
+                # --- END OF CORRECTION ---
             except Exception:
                 results.append({"name": test_name, "status": "FAIL", "details": "Failed to parse response JSON.", "explanation": "The agent's response was not valid JSON."})
         else:

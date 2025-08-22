@@ -1,7 +1,7 @@
 def get_ui(api_url: str = "", bearer_token: str = ""):
     """
-    Returns a dictionary representing the UI components, including the CORRECT
-    default endpoint URL and a tooltip for it.
+    Returns a dictionary representing the UI components, with helpful tooltips
+    and no default URL.
     """
     return {
         "title": "A2A Validation Agent",
@@ -10,12 +10,13 @@ def get_ui(api_url: str = "", bearer_token: str = ""):
                 "name": "api_url",
                 "label": "A2A API Endpoint URL",
                 "type": "text",
-                # --- START OF CORRECTION ---
-                # Add the correct "/invoke" path to the end of the default URL.
-                "value": api_url or "https://my-fastapi-bq-agent-api-gateway-c0lnz9zq.uc.gateway.dev/invoke",
-                # --- END OF CORRECTION ---
+                # --- START OF MODIFICATION ---
+                # Remove the default URL to encourage user input.
+                "value": api_url or "",
                 "required": True,
-                "tooltip": "This is an open API endpoint to an LLM hosted on Cloud Run - do not abuse!"
+                # Add a more descriptive tooltip explaining the endpoint.
+                "tooltip": "The full URL of the agent's endpoint that accepts POST requests. This typically looks like 'https://your-agent-url.com/invoke'."
+                # --- END OF MODIFICATION ---
             },
             {
                 "name": "bearer_token",
@@ -23,7 +24,10 @@ def get_ui(api_url: str = "", bearer_token: str = ""):
                 "type": "text",
                 "value": bearer_token,
                 "required": False,
-                "tooltip": None
+                # --- START OF MODIFICATION ---
+                # Add a helpful tooltip explaining what a Bearer Token is.
+                "tooltip": "An API security token. If required, it is sent in the 'Authorization' header, prefixed with 'Bearer '. Example: 'Bearer sk-Abc123...'"
+                # --- END OF MODIFICATION ---
             },
         ],
         "button": {"text": "Run Validation"},
