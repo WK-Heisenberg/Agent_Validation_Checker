@@ -4,6 +4,8 @@ A comprehensive agentic system designed to validate Agent-to-Agent (A2A) communi
 
 The system is built with the Google Agent Development Kit (ADK) and provides a simple web interface for initiating tests and viewing clear, structured results.
 
+![A2A Validation Agent UI Demo](./assets/demo.mov)
+
 ## Key Features
 
 *   **A2A Protocol Validation:** Performs in-depth checks for authentication standards, correct message formatting, and proper HTTP method compliance.
